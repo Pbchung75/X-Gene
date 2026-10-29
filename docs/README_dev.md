@@ -1,8 +1,4 @@
-# Classification Transcriptomic with XAI
 
-A reproducible pipeline for gene expression classification and biological interpretation using Explainable AI (XAI).
-
----
 
 ## Overview
 
@@ -21,89 +17,6 @@ model, to the rule-extraction model, and on demand to any trained model (see
 There is no command-line entry point — `main.py` is an unused stub. Every flow
 in this repo is driven from the notebooks under `notebooks/` (see "Quick Start"
 below), which can also be run headlessly via `jupyter nbconvert --execute`.
-
----
-
-## Project Structure
-
-```
-LV_code/
-├── configs/
-│   ├── datasets.yaml          Dataset paths, class labels, and platform info
-│   ├── dataset_origin.yaml    Raw GEO / CuMiDa build specs (dataset_builder)
-│   ├── models.yaml            Model hyperparameters, conditional-scaling map, CV settings
-│   ├── feature_selection.yaml Raw / mRMR / Boruta params + rare_class_k_values sweep
-│   ├── holdout.yaml           Split-baseline + holdout-rule-extraction sweep config
-│   └── interpretation.yaml    SHAP + tree-based rule extraction
-│
-├── Dataset/
-│   ├── GEO/                   Raw GEO downloads (series-matrix + platform files)
-│   ├── GEO_Cumida/            GEO datasets converted to CuMiDa format
-│   └── Cumida/                Original CuMiDa format datasets (CSV)
-│
-├── src/
-│   ├── pipeline/               Orchestration layer (GeneExpressionPipeline)
-│   │   ├── core.py             Mixin composition + shared state
-│   │   ├── benchmark.py        run_benchmark — CV/full-data baseline (+ k-sweep)
-│   │   ├── baseline_split.py   run_baseline_split — train/test-split baseline, all models (+ k-sweep)
-│   │   ├── holdout.py          run_rule_extraction_holdout — reuses baseline_split's split+FS
-│   │   ├── rule_extraction.py  run_rule_extraction — full-dataset rules (no split)
-│   │   └── interpretation.py   run_interpretation — reuses benchmark SHAP + rules for display
-│   ├── helper/
-│   │   ├── config_loader.py   YAML configuration management
-│   │   ├── data_loader.py     CuMiDa format loading + missing-value/rare-class handling
-│   │   ├── metrics.py         Classification metrics (incl. per-class breakdown)
-│   │   ├── scaling.py         Conditional StandardScaler (tree models skip scaling)
-│   │   ├── split.py           Stratified train/test split
-│   │   ├── report.py          Console/notebook output + markdown provenance helpers
-│   │   ├── paths.py           resolve_path / safe_filename — shared path helpers
-│   │   ├── training.py        pick_best_run / summarize_repeats — repeated-training bookkeeping
-│   │   └── wandb_utils.py     wandb_log_per_class — shared per-class W&B logging
-│   ├── feature_selection/
-│   │   ├── raw.py             No-op baseline
-│   │   ├── dispatch.py        run_feature_selection — routes fs_method to raw/mrmr*/boruta
-│   │   ├── mrmr_fs.py         mRMR via mrmr-selection (mrmr_k50 / mrmr_k75)
-│   │   └── boruta_fs.py       Boruta via BorutaPy (incl. "auto" selection_mode)
-│   ├── benchmark/
-│   │   └── trainer.py         Stratified K-Fold CV trainer (model comparison)
-│   ├── interpretation/
-│   │   ├── shap_utils.py      SHAP for tree, linear, and neural models
-│   │   ├── rules.py           Tree-based IF-THEN rule extraction (mechanics)
-│   │   ├── rule_mining.py     Orchestration layer above rules.py (fit → mine → save → explain)
-│   │   └── gene_annotation.py Post-hoc biological enrichment of genes-in-rules
-│   ├── dataset_builder/       GEO series-matrix → CuMiDa CSV + probe→gene mapping
-│   ├── visualize/             Dataset EDA / provenance figures + cross-dataset comparisons
-│   ├── api/                   FastAPI backend serving the frontend UI
-│   └── models/
-│       ├── factory.py         Model instantiation by name
-│       ├── nb.py              Gaussian Naive Bayes
-│       ├── knn.py              k-Nearest Neighbors
-│       ├── svm.py             SVM (RBF kernel)
-│       ├── rf.py              Random Forest
-│       ├── dt.py              Decision Tree
-│       ├── xgb.py             XGBoost
-│       └── ann.py             MLP (PyTorch Lightning)
-│
-├── notebooks/
-│   ├── 00.a_Format_GEO_Datasets.ipynb     Raw GEO series matrix → CuMiDa CSV
-│   ├── 00.b_Format_Cumida_Datasets.ipynb  Re-annotate existing CuMiDa CSV
-│   ├── 00.c_Explore_Dataset.ipynb         Rank candidate class-label columns for a GEO dataset
-│   ├── 01_Datasets_Visualization.ipynb    Dataset EDA figures — configurable rare-class K (default 0 = no
-│   │                                       filtering); K>0 writes to outputs/visualizations_k{K}/
-│   ├── 02_Benchmark.ipynb                 CV/full baseline + train/test-split baseline, k-sweep, with an
-│   │                                       artifact-completeness check that resumes any missing combos
-│   ├── 03_Rules_Extraction.ipynb          Full-dataset tree-based rules (no split; needs 02's single run)
-│   └── 04_Rule_Extraction_Holdout.ipynb   Rule extraction on a train/test split (needs 02's k-sweep)
-│
-├── scripts/                    One-shot offline utilities (cache warming, LLM description generation)
-├── frontend/                   React + TypeScript SPA calling src/api
-│
-├── outputs_baseline_full/      run_benchmark's k-swept CV baseline: k{N}/{dataset}/...
-├── outputs_baseline_split/     run_baseline_split's k-swept train/test baseline: k{N}/{dataset}/...
-├── outputs_holdout/            run_rule_extraction_holdout: k{N}/{dataset}/...
-├── outputs_live/               Live UI "Huấn luyện lại" training jobs: <job_id>/...
-└── outputs/                    Flat, no k-nesting — run_rule_extraction / run_interpretation (older, non-split flows)
-```
 
 ---
 
@@ -308,18 +221,3 @@ outputs_live/<job_id>/                                          <- live UI "Hu�
 
 ---
 
-## Key Design Decisions
-
-- **Feature selection on full dataset (CV/full baseline only)** — produces one exportable reduced dataset per method. This makes `run_benchmark`'s CV metrics optimistic relative to a true held-out estimate; `run_baseline_split`/`run_rule_extraction_holdout`'s train/test-split numbers are the leakage-free reference.
-- **Conditional scaling** (`src/helper/scaling.py`) — `StandardScaler` is fit only for distance/gradient-based models (nb, knn, svm, ann); tree/boosting models (rf, dt, xgboost) split on raw feature values and are left unscaled.
-- **`run_baseline_split` repeats training like the holdout flow** — each model is trained `n_repeats` times per `(k, fs_method, model)` (varying only the model's random seed, split fixed), keeping the repeat with the best `select_metric` on the test set (`configs/holdout.yaml -> holdout.split_baseline`); the discarded repeats are still summarized in `models/repeats.csv` / `repeats_summary.csv`. This mirrors `run_rule_extraction_holdout`'s repeat pattern so both flows report a best-of-N estimate rather than a single noisy seed.
-- **`run_baseline_split` kept separate from the holdout rule-extraction flow** — the per-model training method in `HoldoutMixin` also backs the live UI's "Huấn luyện lại" training job, so the reporting-only, all-models train/test baseline lives in its own mixin (`BaselineSplitMixin`) rather than risking that shared code path.
-- **Holdout reuses the split baseline's artifacts** — `run_rule_extraction_holdout` no longer derives its own train/test split or re-runs feature selection; it reads `run_baseline_split`'s split + FS output for the same k, avoiding duplicated compute and guaranteeing both flows are directly comparable.
-- **mRMR fixed-K variants** — `mrmr_k50`/`mrmr_k75` (both MIQ criterion) replace a single configurable-K method, so both run side by side in every sweep without extra config plumbing.
-- **Boruta `"auto"` selection mode** — resolves to `confirmed` if the confirmed-feature count is ≥50, else `confirmed_tentative`, so a dataset that yields too few confirmed features doesn't silently train on an under-powered feature set.
-- **Per-class metrics** — added without changing any existing aggregate metric (`f1_macro` unchanged); kept out of flat CSV summaries to avoid breaking existing column-based consumers.
-- **Adaptive n_splits** — automatically reduced when a class has fewer than 5 samples, preventing `StratifiedKFold` errors.
-- **mrmr-selection** — F-statistic relevance with Pearson-correlation redundancy; no discretisation required.
-- **Boruta** — uses BorutaPy with 500-tree RandomForest; confirms features via FWER-corrected statistics.
-- **SHAP** — TreeExplainer for RF/DT/XGBoost (exact); KernelExplainer for SVM/NB/ANN (approximate).
-- **W&B** — fully optional; disable with `use_wandb=False` or `use_wandb: false` in `models.yaml`.
