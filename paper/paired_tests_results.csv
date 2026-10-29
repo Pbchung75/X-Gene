@@ -1,0 +1,10 @@
+selector,measure,n_pairs,n_nonzero,rf_gt_dt,rf_lt_dt,mean_dt,mean_rf,W,p,p_holm
+Boruta,Active-rule fidelity,12,12,0,12,1.0,0.77025,0.0,0.000488,0.004395
+Boruta,Confidence (all rules),12,12,6,6,0.656917,0.639667,34.0,0.733398,1.0
+Boruta,Coverage,12,10,10,0,0.775,0.987333,0.0,0.001953,0.011719
+mRMR-50,Active-rule fidelity,12,12,0,12,1.0,0.79925,0.0,0.000488,0.004395
+mRMR-50,Confidence (all rules),12,12,5,7,0.722333,0.70525,36.0,0.850098,1.0
+mRMR-50,Coverage,12,10,10,0,0.749333,0.962333,0.0,0.001953,0.011719
+mRMR-75,Active-rule fidelity,12,12,0,12,1.0,0.803833,0.0,0.000488,0.004395
+mRMR-75,Confidence (all rules),12,12,4,8,0.767917,0.699,17.0,0.092285,0.276855
+mRMR-75,Coverage,12,10,10,0,0.800417,0.968333,0.0,0.001953,0.011719

@@ -1,0 +1,40 @@
+Building release: E:\GE_RuGO\X-GENE  ->  E:\GE_RuGO\X-GENE-release
+
+  copied   configs/ -> configs/
+  copied   src/ -> src/
+  skipped  src/api/ (web demo, not needed to reproduce the paper)
+  patched  configs/models.yaml: use_wandb -> false
+  notebook 00.a_Format_GEO_Datasets.ipynb (outputs cleared)
+  notebook 00.b_Format_Cumida_Datasets.ipynb (outputs cleared)
+  notebook 02_Benchmark.ipynb (outputs cleared)
+  notebook 04_Rule_Extraction_Holdout.ipynb (outputs cleared)
+  notebook rule_extraction_results_summary.ipynb (outputs cleared)
+  notebook feature_selection_results_summary.ipynb (outputs cleared)
+  pyproject: removed lightning
+  pyproject: removed gprofiler-official
+  pyproject: removed seaborn
+  pyproject: removed umap-learn
+  pyproject: fastapi -> optional group [app]
+  pyproject: uvicorn -> optional group [app]
+  pyproject: google-genai -> optional group [app]
+  pyproject: python-dotenv -> optional group [app]
+  pyproject: python-multipart -> optional group [app]
+  moved    REFERENCE.md -> docs/REFERENCE.md
+  moved    QUICKSTART.md -> docs/QUICKSTART.md
+  moved    README.md -> docs/README_dev.md
+  created  README.md, LICENSE, data/README.md
+  WARNING  asset not found: fig0_motivation_sans.py
+  WARNING  asset not found: fig1_sans.py
+  WARNING  asset not found: fig3_reduction_quality_B.py
+  WARNING  asset not found: fig3_sans.py
+  WARNING  asset not found: paired_tests.py
+  WARNING  asset not found: table4_per_dataset.csv
+  WARNING  asset not found: paired_tests_results.csv
+
+
+Done. Excluded: .git, .venv, .env, outputs*/, Dataset_Description/, scripts/, frontend/, src/api/, main.py, TEST_CASES.md, extra notebooks.
+Next steps:
+  cd E:\GE_RuGO\X-GENE-release
+  uv lock            # regenerate the lock file after the dependency changes
+  uv sync && run notebook 02 on one dataset to check the environment
+  git init && git add . && git commit -m "X-Gene code for ICCIES 2026"

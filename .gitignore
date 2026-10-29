@@ -1,0 +1,56 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Pipeline outputs & caches (generated at runtime)
+outputs/
+cache/
+outputs_live/
+outputs_baseline_full/
+outputs_baseline_split/
+outputs_holdout/
+outputs_baseline_old/
+outputs_holdout_old/
+outputs_LV/
+
+
+# API backend secrets
+.env
+
+# Frontend (Node)
+frontend/node_modules/
+frontend/dist/
+frontend/.playwright-mcp/
+frontend/*.png
+frontend/test-results/
+frontend/playwright-report/
+frontend/playwright/.cache/
+
+notebooks/wandb
+
+Knowledge_Notes/
+Dataset/
+Dataset_Description/
+Platform_Annotations/
+
+tests/
+# ...except the frontend's own E2E suite (the rule above targets the
+# Python backend's tests/ dir, not frontend/tests/).
+!frontend/tests/
+CT552_TraMy_Nguyen/
+
+# release extras
+# release extras
+.venv/
+outputs*/
+*.joblib
+*.pkl
+notebooks/wandb/
+.ipynb_checkpoints/
