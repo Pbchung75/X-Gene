@@ -1,25 +1,3 @@
-# ============================================================================
-# Classification Transcriptomic with XAI
-# Dataset Origins (build-time config)
-# ============================================================================
-# Paths are relative to the project root (the folder containing configs/).
-# One entry per raw GEO series-matrix file. Edit this file to add a new
-# dataset, then run notebook 00.a_Format_GEO_Datasets to build its CSVs.
-#
-# This file feeds src/dataset_builder.build_geo_dataset(); it has no notion of
-# "enabled" — that is a run-time concept and lives in configs/datasets.yaml.
-#
-# origin fields
-# -------------
-#   tissue                : prefix for the built dataset filenames (e.g. "Breast")
-#   series_matrix          : raw GSE*_series_matrix.txt.gz
-#   annotation_file        : local GPL annotation (.annot/.annot.gz); mygene fallback
-#   output_dir             : directory to write built CSVs + provenance files into
-#   class_characteristic   : !Sample_characteristics_ch1 key used as the class
-#   dedup_strategy         : probe→gene collapse ('mean' | 'max_var')
-#   na_class_action        : 'exclude' | 'keep_as_unknown'
-#   use_mygene_fallback    : query MyGene.info for probes the annotation file misses
-#   species                : species for MyGene.info queries
 
 origins:
 
