@@ -17,9 +17,7 @@
 #                              run_baseline_split() already produced for that
 #                              k (does not create its own split), and trains
 #                              the dedicated rule-extraction models (rf,
-#                              decisiontree) on top of them n_repeats times
-#                              each, keeping the run with the best
-#                              select_metric on the test set.
+#                              decisiontree)
 #
 #   holdout.live_ui_defaults -- read ONLY by src/api/registry.py's
 #                              compute_holdout_split(), the on-demand split
@@ -30,14 +28,7 @@
 # Rule model hyperparameters, simplification filters and SHAP config are read
 # from configs/interpretation.yaml (interpretation.rules / interpretation.shap).
 
-holdout:
-  enabled: true
-  output_root: "outputs_holdout"
 
-  # Which k (from batch.rare_class_k_values) the API/UI currently serves --
-  # see src/api/registry.py's holdout_root_for(). Change this + restart the
-  # API to switch which outputs_holdout/k{N}/ folder is exposed; no runtime
-  # UI selector.
   active_min_samples_per_class: 4
 
   split_baseline:
@@ -47,16 +38,7 @@ holdout:
     test_size: 0.15
     split_random_state: 42
 
-    # Repeated training of every enabled model (all of them, not just the
-    # rule models), same pattern as holdout.batch below: the train/test split
-    # itself is fixed (one stratified split per k, from build_dataset_split),
-    # only each repeat's model random_state changes (repeat_base_seed + i).
-    # The run with the best select_metric on the test set is kept; the other
-    # n_repeats-1 runs are discarded (not written to disk), only summarized
-    # in models/repeats.csv.
-    n_repeats: 10
-    repeat_base_seed: 0
-    select_metric: "f1_macro"
+
 
   batch:
     # Rare-class thresholds (min_samples_per_class) to reuse from the split
