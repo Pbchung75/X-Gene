@@ -1,6 +1,6 @@
 # X-Gene: A Rule-Centric Framework for Explainable Gene Expression Classification
 
-Code for the paper *X-Gene: A Rule-Centric Framework for Explainable Gene Expression Classification
+*X-Gene: A Rule-Centric Framework for Explainable Gene Expression Classification
 and Biological Interpretation* (ICCIES 2026).
 
 X-Gene extracts IF–THEN rules from decision trees and random forests trained on microarray data,
